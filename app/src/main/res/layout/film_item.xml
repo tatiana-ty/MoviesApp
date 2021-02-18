@@ -2,16 +2,24 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="horizontal"
+    android:orientation="vertical"
     android:layout_width="120dp"
-    android:layout_height="150dp">
+    android:layout_height="wrap_content">
 
     <ImageView
-        android:id="@+id/film"
+        android:id="@+id/filmImage"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="150dp"
         android:gravity="center"
         android:src="@mipmap/example"
         tools:ignore="ContentDescription" />
+
+    <TextView
+        android:id="@+id/filmName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Film1"
+        android:textSize="30sp"
+        android:layout_marginStart="22dp"/>
 
 </LinearLayout>
