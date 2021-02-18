@@ -1,4 +1,4 @@
-package com.example.android2
+package com.example.android2.view
 
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
@@ -6,6 +6,9 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.example.android2.model.Film
+import com.example.android2.viewModel.FilmViewModel
+import com.example.android2.R
 import kotlinx.android.synthetic.main.film_fragment.*
 
 class FilmFragment : Fragment() {
@@ -31,7 +34,9 @@ class FilmFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val film = arguments?.getParcelable<Film>(BUNDLE_EXTRA)
+        val film = arguments?.getParcelable<Film>(
+            BUNDLE_EXTRA
+        )
         film?.let { film ->
             name.text = film.name
             rating.text = film.rating

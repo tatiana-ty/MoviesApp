@@ -1,11 +1,9 @@
-package com.example.android2
+package com.example.android2.view
 
-import android.annotation.SuppressLint
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
-import com.example.android2.ui.main.MainFragment
-
+import com.example.android2.R
 
 class MainActivity : AppCompatActivity() {
 
