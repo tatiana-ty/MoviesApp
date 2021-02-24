@@ -5,12 +5,15 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class Film(
-    val name: String,
-    val rating: String,
-    val year: String,
-    val country: String,
-    val genre: String
+    val name: String = "",
+    var rating: String = "",
+    var year: String = "",
+    var country: String = "",
+    var genre: String = "",
+    var description: String = ""
 ) : Parcelable
+
+var filmList = getFilmsList();
 
 fun getFilmsList() = listOf(
         Film("Film1", "4.5", "2020", "US", "Comedy"),
