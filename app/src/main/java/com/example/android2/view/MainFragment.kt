@@ -1,6 +1,5 @@
-package com.example.android2.ui.main
+package com.example.android2.view
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,15 +9,18 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.android2.*
-
+import com.example.android2.model.CellClickListener
+import com.example.android2.model.Film
+import com.example.android2.viewModel.MainViewModel
 
 class MainFragment : Fragment() {
 
     lateinit var recyclerView: RecyclerView
     private lateinit var viewModel: MainViewModel
 
-    private val adapter = Adapter(object : CellClickListener {
-        override fun onCellClickListener (film: Film) {
+    private val adapter = MainFragmentAdapter(object :
+        CellClickListener {
+        override fun onCellClickListener(film: Film) {
             val manager = activity?.supportFragmentManager
             if (manager != null) {
                 val bundle = Bundle()
@@ -35,12 +37,11 @@ class MainFragment : Fragment() {
         fun newInstance() = MainFragment()
     }
 
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        var view = inflater!!.inflate(R.layout.main_fragment, container, false)
+        val view = inflater.inflate(R.layout.main_fragment, container, false)
         loadView(view)
         recyclerView = view.findViewById(R.id.filmGrid)
         return view
@@ -55,7 +56,7 @@ class MainFragment : Fragment() {
     }
 
     fun loadView(view: View) {
-        var recyclerView: RecyclerView = view.findViewById<RecyclerView>(R.id.filmGrid) as RecyclerView
+        val recyclerView: RecyclerView = view.findViewById<RecyclerView>(R.id.filmGrid) as RecyclerView
         recyclerView.layoutManager = GridLayoutManager(context, 3)
         recyclerView.setHasFixedSize(true)
         recyclerView.adapter = adapter
@@ -66,9 +67,4 @@ class MainFragment : Fragment() {
         adapter.removeListener()
         super.onDestroy()
     }
-
-    interface OnItemViewClickListener {
-        fun onItemViewClick(film: Film)
-    }
-
 }
