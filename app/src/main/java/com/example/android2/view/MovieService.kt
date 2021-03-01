@@ -4,7 +4,6 @@ import android.app.IntentService
 import android.content.Intent
 import android.os.Build
 import androidx.annotation.RequiresApi
-import androidx.core.app.JobIntentService
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.example.android2.model.*
 import com.google.gson.Gson
@@ -15,40 +14,39 @@ import java.net.URL
 import java.util.stream.Collectors
 import javax.net.ssl.HttpsURLConnection
 
-const val FILM_NAME_EXTRA = "Film Name"
+const val MOVIE_ID_EXTRA = "Movie ID"
 private const val REQUEST_GET = "GET"
 private const val REQUEST_TIMEOUT = 10000
 
-class FilmInfoService(name: String = "FilmInfoService") : IntentService(name) {
+class MovieService(name: String = "MovieService") : IntentService(name) {
 
-    private val broadcastIntent = Intent(FILM_LIST_INTENT_FILTER)
+    private val broadcastIntent = Intent(MOVIE_INTENT_FILTER)
 
     @RequiresApi(Build.VERSION_CODES.N)
     override fun onHandleIntent(intent: Intent?) {
         if (intent == null) {
             onEmptyIntent()
         } else {
-            val name = intent.getStringExtra(FILM_NAME_EXTRA)
-            if (name == null) {
+            val movieId = intent.getStringExtra(MOVIE_ID_EXTRA)
+            if (movieId == null) {
                 onEmptyData()
             } else {
-                loadFilmInfo(name)
+                loadMovie(movieId)
             }
         }
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
-    private fun loadFilmInfo(name: String) {
-        print("here")
+    private fun loadMovie(movieId: String) {
         try {
-            val uri =
-                URL("https://api.themoviedb.org/3/trending/movie/week?api_key=${REQUEST_API_KEY}")
+            val uri = URL("https://api.themoviedb.org/3/movie/${movieId}")
             lateinit var urlConnection: HttpsURLConnection
             try {
                 urlConnection = uri.openConnection() as HttpsURLConnection
                 urlConnection.apply {
                     requestMethod = REQUEST_GET
                     readTimeout = REQUEST_TIMEOUT
+                    addRequestProperty("api_key", MOVIES_API_KEY)
                 }
 
                 val movieDTO: MovieDTO =
@@ -56,7 +54,6 @@ class FilmInfoService(name: String = "FilmInfoService") : IntentService(name) {
                         getLines(BufferedReader(InputStreamReader(urlConnection.inputStream))),
                         MovieDTO::class.java
                     )
-                print(movieDTO)
                 onResponse(movieDTO)
             } catch (e: Exception) {
                 onErrorRequest(e.message ?: "Empty error")
@@ -74,23 +71,44 @@ class FilmInfoService(name: String = "FilmInfoService") : IntentService(name) {
     }
 
     private fun onResponse(movieDTO: MovieDTO) {
-        val list = movieDTO.results
-        list?.let {
-            onSuccessResponse(it[0])
-        }
+        movieDTO?.let {
+            onSuccessResponse(
+                it.title,
+                it.rating,
+                it.year,
+                it.countries,
+                it.genres,
+                it.overview,
+                it.image
+            )
+        } ?: run { onEmptyResponse() }
     }
 
-    private fun onSuccessResponse(result: ResultsDTO) {
+    private fun onSuccessResponse(title: String?, rating: Double?, year: String?,
+    countriesList: List<CountryDTO>?, genresList: List<GenreDTO>?, overview: String?, image: String?) {
         putLoadResult(DETAILS_RESPONSE_SUCCESS_EXTRA)
-        broadcastIntent.putExtra(DETAILS_TITLE_EXTRA, result.title)
-        broadcastIntent.putExtra(DETAILS_OVERVIEW_EXTRA, result.overview)
+        broadcastIntent.putExtra(DETAILS_TITLE_EXTRA, title)
+        broadcastIntent.putExtra(DETAILS_RATING_EXTRA, rating)
+        broadcastIntent.putExtra(DETAILS_YEAR_EXTRA, year)
+        var countries = ""
+        if (countriesList != null) {
+            for (item in countriesList) {
+                countries += item.name
+                if(countriesList.indexOf(item) < countriesList.size) countries += ", "
+            }
+        }
+        broadcastIntent.putExtra(DETAILS_COUNTRIES_EXTRA, countries)
+        var genres = ""
+        if (genresList != null) {
+            for (item in genresList) {
+                genres += item.name
+                if(genresList.indexOf(item) < genresList.size) genres += ", "
+            }
+        }
+        broadcastIntent.putExtra(DETAILS_GENRES_EXTRA, genres)
+        broadcastIntent.putExtra(DETAILS_OVERVIEW_EXTRA, overview)
+        broadcastIntent.putExtra(DETAILS_IMAGE_EXTRA, image)
         LocalBroadcastManager.getInstance(this).sendBroadcast(broadcastIntent)
-//        filmList = mutableListOf()
-//        for(i in list) {
-//            var film = Film(name = i.title, description = i.overview, country = i.original_language)
-//            (filmList as MutableList<Film>).add(film);
-//        }
-//        println(filmList)
     }
 
     private fun onMalformedURL() {
@@ -122,5 +140,4 @@ class FilmInfoService(name: String = "FilmInfoService") : IntentService(name) {
     private fun putLoadResult(result: String) {
         broadcastIntent.putExtra(DETAILS_LOAD_RESULT_EXTRA, result)
     }
-
 }
