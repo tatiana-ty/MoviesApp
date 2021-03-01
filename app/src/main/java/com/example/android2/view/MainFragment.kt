@@ -22,13 +22,14 @@ class MainFragment : Fragment() {
         CellClickListener {
         override fun onCellClickListener(film: Film) {
             val manager = activity?.supportFragmentManager
-            if (manager != null) {
-                val bundle = Bundle()
-                bundle.putParcelable(FilmFragment.BUNDLE_EXTRA, film)
-                manager.beginTransaction()
-                    .add(R.id.container, FilmFragment.newInstance(bundle))
-                    .addToBackStack("")
-                    .commitAllowingStateLoss()
+            when {
+                manager != null -> {
+                    val bundle = Bundle().apply { putParcelable(FilmFragment.BUNDLE_EXTRA, film) }
+                    manager.beginTransaction()
+                        .add(R.id.container, FilmFragment.newInstance(bundle))
+                        .addToBackStack("")
+                        .commitAllowingStateLoss()
+                }
             }
         }
     })

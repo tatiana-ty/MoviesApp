@@ -13,7 +13,7 @@ import kotlinx.android.synthetic.main.film_item.view.*
 class MainFragmentAdapter(private var cellClickListener: CellClickListener?) : RecyclerView.Adapter<MainFragmentAdapter.MainViewHolder>() {
     private var data = getFilmsList();
 
-    fun setWeather(data: List<Film>) {
+    fun setFilms(data: List<Film>) {
         this.data = data
         notifyDataSetChanged()
     }
