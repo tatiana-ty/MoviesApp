@@ -11,7 +11,8 @@ data class Movie(
     val country: String = "Default",
     val genre: String = "Default",
     val description: String = "Some Description",
-    val image: String = "Image"
+    val image: String = "Image",
+    var note: String = ""
 ) : Parcelable
 
 var listOfMovies = getMovieList()

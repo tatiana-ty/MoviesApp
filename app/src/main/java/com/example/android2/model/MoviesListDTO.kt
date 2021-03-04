@@ -7,6 +7,7 @@ data class MoviesListDTO (
 )
 
 data class ResultsDTO (
+    val adult: Boolean?,
     val id: Int?,
     val title: String?,
     @SerializedName("poster_path")

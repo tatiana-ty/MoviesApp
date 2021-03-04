@@ -2,10 +2,10 @@ package com.example.android2.viewModel
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.android2.App.Companion.getHistoryDao
+import com.example.android2.model.Movie
 import com.example.android2.model.MovieDTO
-import com.example.android2.repository.DetailsRepository
-import com.example.android2.repository.DetailsRepositoryImpl
-import com.example.android2.repository.RemoteDataSource
+import com.example.android2.repository.*
 import com.example.android2.utils.convertDtoToModel
 import retrofit2.Call
 import retrofit2.Callback
@@ -16,8 +16,9 @@ private const val REQUEST_ERROR = "Ошибка запроса на сервер
 private const val CORRUPTED_DATA = "Неполные данные"
 
 class MovieViewModel(
-private val detailsLiveData: MutableLiveData<AppState> = MutableLiveData(),
-private val detailsRepositoryImpl: DetailsRepository = DetailsRepositoryImpl(RemoteDataSource())
+    private val detailsLiveData: MutableLiveData<AppState> = MutableLiveData(),
+    private val detailsRepositoryImpl: DetailsRepository = DetailsRepositoryImpl(RemoteDataSource()),
+    private val historyRepository: LocalRepository = LocalRepositoryImpl(getHistoryDao())
 ) : ViewModel() {
 
     fun getLiveData() = detailsLiveData
@@ -25,6 +26,10 @@ private val detailsRepositoryImpl: DetailsRepository = DetailsRepositoryImpl(Rem
     fun getMovieFromRemoteSource(movieId: String) {
         detailsLiveData.value = AppState.Loading
         detailsRepositoryImpl.getMovieDetailsFromServer(movieId, callBack)
+    }
+
+    fun saveMovieToDB(movie: Movie) {
+        historyRepository.saveEntity(movie)
     }
 
     private val callBack = object :
