@@ -1,22 +1,34 @@
 package com.example.android2.viewModel
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.android2.repository.MainRepository
+import com.example.android2.repository.MainRepositoryImpl
 import java.lang.Thread.sleep
 
-class MainViewModel(private val liveDataToObserve: MutableLiveData<Any> = MutableLiveData()) :
-        ViewModel() {
+class MainViewModel(
+    private val liveDataToObserve: MutableLiveData<AppState> = MutableLiveData(),
+    private val repository: MainRepository = MainRepositoryImpl()
+) :
+    ViewModel() {
 
-    fun getData(): LiveData<Any> {
-        return liveDataToObserve
-    }
+    fun getLiveData() = liveDataToObserve
+
+    fun getMovieFromLocalSource() = getDataFromLocalSource()
+
+    fun getMovieFromRemoteSource() = getDataFromLocalSource()
 
     private fun getDataFromLocalSource() {
+        liveDataToObserve.value = AppState.Loading
         Thread {
             sleep(1000)
-            liveDataToObserve.postValue(Any())
+            liveDataToObserve.postValue(AppState.Success(
+                    repository.getMovieInfo()
+            ))
         }.start()
     }
 
+    override fun onCleared() {
+        super.onCleared()
+    }
 }

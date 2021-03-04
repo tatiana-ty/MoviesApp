@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
+    android:layout_marginStart="10dp"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
@@ -7,19 +8,20 @@
     android:layout_height="wrap_content">
 
     <ImageView
-        android:id="@+id/filmImage"
+        android:id="@+id/movieMainImage"
         android:layout_width="match_parent"
-        android:layout_height="150dp"
+        android:layout_height="180dp"
         android:gravity="center"
         android:src="@mipmap/example"
-        tools:ignore="ContentDescription" />
+        android:contentDescription="@string/movie_image"/>
 
     <TextView
-        android:id="@+id/filmName"
-        android:layout_width="wrap_content"
+        android:id="@+id/movieName"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Film1"
-        android:textSize="30sp"
-        android:layout_marginStart="22dp"/>
+        android:textSize="@dimen/movie_fragment_text_size"
+        android:textColor="@color/black"
+        android:gravity="center"/>
 
 </LinearLayout>
