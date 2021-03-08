@@ -3,4 +3,5 @@
     <dimen name="movie_fragment_text_size">8pt</dimen>
     <dimen name="movie_fragment_info_width">180dp</dimen>
     <dimen name="movie_fragment_spaces">5dp</dimen>
+    <dimen name="main_container_text_size">10sp</dimen>
 </resources>

@@ -10,4 +10,9 @@
         android:id="@+id/menu_settings"
         app:showAsAction="never"
         android:title="Settings"/>
+
+    <item
+        android:id="@+id/menu_content_provider"
+        android:title="Contacts"
+        app:showAsAction="never" />
 </menu>
