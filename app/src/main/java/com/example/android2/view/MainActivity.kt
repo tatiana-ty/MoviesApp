@@ -28,14 +28,26 @@ class MainActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.menu_settings -> {
-                supportFragmentManager.beginTransaction()
-                        .replace(R.id.container, SettingFragment.newInstance())
-                        .commitNow()
-                return true
+                supportFragmentManager.apply {
+                    beginTransaction()
+                            .add(R.id.container, SettingFragment.newInstance())
+                            .addToBackStack("")
+                            .commitAllowingStateLoss()
+                }
+                true
             }
             R.id.menu_search ->{
                 Toast.makeText(applicationContext, "search", Toast.LENGTH_LONG).show()
-                return true
+                true
+            }
+            R.id.menu_content_provider -> {
+                supportFragmentManager.apply {
+                    beginTransaction()
+                            .add(R.id.container, ContactsFragment.newInstance())
+                            .addToBackStack("")
+                            .commitAllowingStateLoss()
+                }
+                true
             }
             else -> super.onOptionsItemSelected(item)
         }
