@@ -9,13 +9,16 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.android2.model.OnItemClickListener
 import com.example.android2.R
+import com.example.android2.databinding.MovieItemBinding
 import com.example.android2.model.ResultsDTO
 
 class MainFragmentAdapter(private var onItemClickListener: OnItemClickListener?,
                           val movies: List<ResultsDTO>) :
     RecyclerView.Adapter<MainFragmentAdapter.MainViewHolder>() {
 
+    var isAdult = false
     var moviesList = movies
+    private lateinit var movieItemBinding: MovieItemBinding
 
     fun removeListener() {
         onItemClickListener = null
@@ -27,6 +30,7 @@ class MainFragmentAdapter(private var onItemClickListener: OnItemClickListener?,
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MainViewHolder {
+        movieItemBinding = MovieItemBinding.inflate(LayoutInflater.from(parent.context))
         return MainViewHolder(
             LayoutInflater.from(parent.context)
                 .inflate(R.layout.movie_item, parent, false) as View
@@ -46,6 +50,7 @@ class MainFragmentAdapter(private var onItemClickListener: OnItemClickListener?,
         private val title: TextView = itemView.findViewById(R.id.movieName)
 
         fun bind(movie: ResultsDTO) {
+            if (movie.adult == true) isAdult = true
             val movieId = movie.id
             itemView.apply {
                 setOnClickListener { onItemClickListener?.onItemClick(movieId!!) }

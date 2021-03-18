@@ -3,6 +3,8 @@ package com.example.android2.view
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
+import android.view.MenuItem
+import android.widget.Toast
 import com.example.android2.R
 
 class MainActivity : AppCompatActivity() {
@@ -23,4 +25,19 @@ class MainActivity : AppCompatActivity() {
         return true
     }
 
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.menu_settings -> {
+                supportFragmentManager.beginTransaction()
+                        .replace(R.id.container, SettingFragment.newInstance())
+                        .commitNow()
+                return true
+            }
+            R.id.menu_search ->{
+                Toast.makeText(applicationContext, "search", Toast.LENGTH_LONG).show()
+                return true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
 }

@@ -1,9 +1,11 @@
 package com.example.android2.view
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Adapter
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -23,6 +25,10 @@ import retrofit2.Callback
 import retrofit2.Response
 
 class MainFragment : Fragment() {
+
+    var includeAdult = false
+    lateinit var mainAdapter: MainFragmentAdapter
+
     private val viewModel: MainViewModel by lazy {
         ViewModelProvider(this).get(MainViewModel::class.java)
     }
@@ -39,26 +45,39 @@ class MainFragment : Fragment() {
         val request = ServiceBuilder.buildService(MoviesAPI::class.java)
         val call = request.getListOfMovies("popular", MOVIES_API_KEY)
 
+        activity.let {
+            includeAdult = !it?.getPreferences(Context.MODE_PRIVATE)?.getBoolean(INCLUDE_ADULT, false)!!
+        }
+
+
+
         call.enqueue(object : Callback<MoviesListDTO>{
             override fun onResponse(call: Call<MoviesListDTO>, response: Response<MoviesListDTO>) {
+                var movieList: MutableList<ResultsDTO> = mutableListOf()
+                if (includeAdult == false) {
+                    for (item in response.body()!!.results!!) {
+                        if (item.adult == false) movieList.add(item)
+                    }
+                } else movieList = (response.body()!!.results as MutableList<ResultsDTO>?)!!
+                mainAdapter = MainFragmentAdapter(object : OnItemClickListener {
+                    override fun onItemClick(movieId: Int) {
+                        val manager = activity?.supportFragmentManager
+                        manager?.let {
+                            val bundle = Bundle().apply {
+                                putInt(MovieFragment.BUNDLE_EXTRA, movieId)
+                            }
+                            manager.beginTransaction()
+                                .add(R.id.container, MovieFragment.newInstance(bundle))
+                                .addToBackStack("")
+                                .commitAllowingStateLoss()
+                        }
+                    }
+                }, movieList)
                 if (response.isSuccessful){
                     mainFragmentLoadingLayout.visibility = View.GONE
                     mainFragmentRecyclerView.apply {
                         layoutManager = GridLayoutManager(context, 3)
-                        adapter = MainFragmentAdapter(object : OnItemClickListener {
-                            override fun onItemClick(movieId: Int) {
-                                val manager = activity?.supportFragmentManager
-                                if (manager != null) {
-                                    val bundle = Bundle().apply {
-                                        putInt(MovieFragment.BUNDLE_EXTRA, movieId)
-                                    }
-                                    manager.beginTransaction()
-                                        .add(R.id.container, MovieFragment.newInstance(bundle))
-                                        .addToBackStack("")
-                                        .commitAllowingStateLoss()
-                                }
-                            }
-                        }, response.body()!!.results!!)
+                        adapter = mainAdapter
                     }
                 }
             }
@@ -93,7 +112,7 @@ class MainFragment : Fragment() {
     }
 
     override fun onDestroy() {
-        //adapter.removeListener()
+        mainAdapter.removeListener()
         super.onDestroy()
     }
 
