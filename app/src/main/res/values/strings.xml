@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Android2</string>
+    <string name="app_name">Movies</string>
     <string name="error">Error</string>
     <string name="reload">Reload</string>
     <string name="movie_image">Movie Image</string>
