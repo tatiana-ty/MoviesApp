@@ -1,6 +1,6 @@
 package com.example.android2.repository
 
-import com.example.android2.model.MOVIES_API_KEY
+import com.example.android2.BuildConfig.MOVIES_API_KEY
 import com.example.android2.model.MovieDTO
 import com.example.android2.model.MoviesList
 import com.example.android2.model.MoviesListDTO

@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import com.example.android2.BuildConfig.MOVIES_API_KEY
 import com.example.android2.model.*
 import com.google.gson.Gson
 import java.io.BufferedReader

@@ -23,7 +23,20 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
+        debug {
+            versionNameSuffix "-debug"
+        }
     }
+
+    buildTypes.each {
+        Properties properties = new Properties()
+        properties.load(project.rootProject.file("app/src/main/assets/app.properties").newDataInputStream())
+        def apiKey = properties.getProperty("movies_api_key", "")
+        it.buildConfigField "String", "MOVIES_API_KEY", apiKey
+        def mainLink = properties.getProperty("main_link", "")
+        it.buildConfigField "String", "MAIN_LINK", mainLink
+    }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
