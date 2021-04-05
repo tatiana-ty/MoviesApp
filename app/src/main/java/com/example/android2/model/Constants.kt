@@ -1,8 +1,5 @@
 package com.example.android2.model
 
-const val MOVIES_API_KEY = "26ff853f727e23e10cff2660c284b698"
-const val MAIN_LINK = "https://api.themoviedb.org/3/movie/"
-
 const val MOVIE_INTENT_FILTER = "MOVIE INTENT FILTER"
 const val MOVIES_LIST_INTENT_FILTER = "MOVIES LIST INTENT FILTER"
 
